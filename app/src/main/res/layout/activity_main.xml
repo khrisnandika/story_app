@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/swipeRefreshLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".view.MainActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/txt_opening1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Halo"
+            android:fontFamily="@font/poppinsregular"
+            android:textSize="15sp"
+            android:layout_marginTop="32dp"
+            android:layout_marginStart="25dp"
+            />
+        <TextView
+            android:id="@+id/txt_username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Krisna"
+            android:fontFamily="@font/poppinsbold"
+            android:textSize="15sp"
+            android:layout_marginTop="46dp"
+            android:layout_marginStart="25dp"
+            />
+        <Button
+            android:id="@+id/btn_logout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Logout"
+            android:layout_marginTop="20dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="25dp"
+            />
+        <Button
+            android:id="@+id/btn_add"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/btn_logout"
+            android:text="Add Story"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="25dp"
+            />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recylerViewMain"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/btn_logout"
+            android:layout_centerInParent="true"
+            android:layout_marginStart="25dp"
+            android:layout_marginTop="25dp"
+            android:layout_marginEnd="25dp"
+            android:layout_marginBottom="25dp"
+            tools:listitem="@layout/list_story" />
+
+        <ProgressBar
+            android:id="@+id/progress_story"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:indeterminate="true"
+            android:indeterminateDrawable="@drawable/progress_bg"
+            android:progress="0"
+            android:visibility="gone"/>
+
+    </RelativeLayout>
+
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

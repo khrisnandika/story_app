@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".view.LoginActivity">
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        app:srcCompat="@drawable/loginscreen"/>
+
+    <TextView
+        android:id="@+id/txt_title_login_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="56dp"
+        android:layout_centerHorizontal="true"
+        android:text="@string/title_login_page1"
+        android:textColor="@color/white"
+        android:fontFamily="@font/poppinssemibold"
+        android:textSize="25sp"/>
+    <TextView
+        android:id="@+id/txt_title_login_2"
+        android:layout_below="@+id/txt_title_login_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="@string/title_login_page2"
+        android:textColor="@color/white"
+        android:fontFamily="@font/poppinsregular"
+        android:textSize="15sp"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="415dp"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/shape_rounded_50">
+
+        <ProgressBar
+            android:id="@+id/progress_login"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:indeterminate="true"
+            android:indeterminateDrawable="@drawable/progress_bg"
+            android:progress="0"
+            android:visibility="gone"/>
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layout_etEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:hintEnabled="false"
+            android:layout_marginTop="80dp"
+            >
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_email"
+                android:layout_width="match_parent"
+                android:layout_height="47dp"
+                android:layout_below="@+id/et_username"
+                android:layout_marginStart="35dp"
+                android:layout_marginEnd="35dp"
+                android:background="@drawable/shape_rounded_10"
+                android:drawableStart="@drawable/ic_email"
+                android:paddingStart="20dp"
+                android:drawablePadding="15dp"
+                android:textSize="12sp"
+                android:hint="@string/email"
+                android:ems="10"
+                android:inputType="textEmailAddress"
+                tools:ignore="SpeakableTextPresentCheck"
+                />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layout_etPassword"
+            android:layout_below="@id/layout_etEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:passwordToggleEnabled="true"
+            app:hintEnabled="false"
+            android:layout_marginTop="10dp"
+            >
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_password"
+                android:layout_below="@id/et_email"
+                android:layout_width="match_parent"
+                android:layout_height="47dp"
+                android:layout_marginStart="35dp"
+                android:layout_marginEnd="35dp"
+                android:background="@drawable/shape_rounded_10"
+                android:drawableStart="@drawable/ic_password"
+                android:paddingStart="20dp"
+                android:drawablePadding="15dp"
+                android:textSize="12sp"
+                android:hint="@string/password"
+                android:ems="10"
+                android:inputType="textPassword"
+                tools:ignore="SpeakableTextPresentCheck"
+                />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <Button
+            android:id="@+id/btn_login"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginStart="35dp"
+            android:layout_marginEnd="35dp"
+            android:layout_marginTop="75dp"
+            android:layout_below="@id/layout_etPassword"
+            android:text="@string/login"
+            app:backgroundTint="#1E2D3F"
+            android:textSize="15sp"
+            android:textColor="@color/white"
+            android:fontFamily="@font/poppinssemibold"
+            android:background="@drawable/shape_rounded_15"
+            />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_below="@id/btn_login"
+            android:layout_marginTop="13dp"
+            android:layout_centerHorizontal="true">
+
+            <TextView
+                android:id="@+id/txt_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/title_login_page3"
+                android:textColor="@color/white"
+                android:fontFamily="@font/poppinsregular"
+                android:textSize="12sp"/>
+
+            <TextView
+                android:id="@+id/txt_register"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/register"
+                android:layout_marginStart="5dp"
+                android:textColor="@color/white"
+                android:fontFamily="@font/poppinssemibold"
+                android:textSize="12sp"/>
+
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</RelativeLayout>

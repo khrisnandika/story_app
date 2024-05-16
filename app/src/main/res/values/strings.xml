@@ -1,0 +1,30 @@
+<resources>
+    <string name="app_name">Story Apps</string>
+
+
+    <string name="explore">Explore Now</string>
+    <string name="message_welcome_page">Explore A \nWorld Of \nStories.</string>
+
+    <string name="register">Register</string>
+    <string name="message_register_page">Please complete your personal information below</string>
+    <string name="title_register_page1">Register</string>
+    <string name="title_register_page2">Create your account</string>
+    <string name="title_register_page3">Already have account?</string>
+    <string name="title_register_page4">By registering, you are agreeing to our Terms of use and Privacy Policy.</string>
+    <string name="username">Username</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="confirm_password">Confirm Password</string>
+
+    <string name="login">Login</string>
+    <string name="start">Start Now</string>
+    <string name="message_login_page">Please complete your personal information</string>
+    <string name="title_login_page1">Welcome back!</string>
+    <string name="title_login_page2">Login to your account</string>
+    <string name="title_login_page3">Don’t have an account?</string>
+
+
+    <string name="message_main_page">Explore a world of stories.</string>
+    <string name="greeting">Hi %1$s,</string>
+    <string name="logout">Logout</string>
+</resources>
