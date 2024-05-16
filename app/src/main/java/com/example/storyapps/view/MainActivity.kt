@@ -25,16 +25,8 @@ class MainActivity : AppCompatActivity() {
         AdapterStory { item -> navigateToDetail(item.id) }
     }
 
-    // Register for activity result for AddStoryActivity
-    private val startForResultAddStory = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == RESULT_OK) {
-            // Refresh story list
-            val token = sharedPreferences.getString("token", "")
-            token?.let {
-                mainViewModel.getListStory(it)
-            }
-        }
-    }
+    // Menambahkan variabel boolean untuk menandai apakah operasi refresh sedang berlangsung
+    private var isRefreshing = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,9 +50,19 @@ class MainActivity : AppCompatActivity() {
                 is ResultStory.Success<*> -> {
                     @Suppress("UNCHECKED_CAST")
                     adapter.setUsersData(it.data as MutableList<ListStoryItem>)
+                    // Jika operasi refresh sedang berlangsung, nonaktifkan animasi refresh
+                    if (isRefreshing) {
+                        binding.swipeRefreshLayout.isRefreshing = false
+                        isRefreshing = false // Menandai bahwa operasi refresh telah selesai
+                    }
                 }
                 is ResultStory.Error -> {
                     Toast.makeText(this, it.exception.message.toString(), Toast.LENGTH_SHORT).show()
+                    // Jika operasi refresh sedang berlangsung dan terjadi kesalahan, nonaktifkan animasi refresh
+                    if (isRefreshing) {
+                        binding.swipeRefreshLayout.isRefreshing = false
+                        isRefreshing = false // Menandai bahwa operasi refresh telah selesai dengan kesalahan
+                    }
                 }
                 is ResultStory.Loading -> {
                     binding.progressStory.isVisible = it.isLoading
@@ -92,13 +94,24 @@ class MainActivity : AppCompatActivity() {
 
         // Setup SwipeRefreshLayout
         binding.swipeRefreshLayout.setOnRefreshListener {
-            // Panggil getListStory dengan memberikan token saat refresh
+            // Mengecek apakah operasi refresh sedang berlangsung
+            if (!isRefreshing) {
+                isRefreshing = true // Menandai bahwa operasi refresh sedang berlangsung
+                val token = sharedPreferences.getString("token", "")
+                token?.let {
+                    mainViewModel.getListStory(it)
+                }
+            }
+        }
+
+        // Tambahan kode untuk otomatis memperbarui daftar cerita saat Activity dimulai
+        binding.swipeRefreshLayout.isRefreshing = true // Aktifkan animasi refresh
+        binding.swipeRefreshLayout.postDelayed({
             token?.let {
                 mainViewModel.getListStory(it)
             }
-            // Hentikan animasi refresh setelah selesai
-            binding.swipeRefreshLayout.isRefreshing = false
-        }
+            binding.swipeRefreshLayout.isRefreshing = false // Nonaktifkan animasi refresh
+        }, 1000)
     }
 
     private fun navigateToDetail(id: String) {
@@ -106,4 +119,15 @@ class MainActivity : AppCompatActivity() {
         intent.putExtra("story_id", id)
         startActivity(intent)
     }
+    private val startForResultAddStory = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == RESULT_OK) {
+            // Refresh story list
+            val token = sharedPreferences.getString("token", "")
+            token?.let {
+                mainViewModel.getListStory(it)
+            }
+        }
+    }
+
 }
+

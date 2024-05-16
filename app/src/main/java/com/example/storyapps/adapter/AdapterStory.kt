@@ -15,6 +15,12 @@ class AdapterStory (private val dataInformation : MutableList<ListStoryItem> = m
         this.dataInformation.addAll(data)
         notifyDataSetChanged()
     }
+    fun addStory(story: ListStoryItem) {
+        // Add the new story to the list
+        dataInformation.add(story)
+        // Notify the adapter that a new item has been added
+        notifyItemInserted(dataInformation.size - 1)
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StoryViewHolder =
         StoryViewHolder(ListStoryBinding.inflate(LayoutInflater.from(parent.context), parent, false))

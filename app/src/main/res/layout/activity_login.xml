@@ -89,7 +89,7 @@
             app:hintEnabled="false"
             android:layout_marginTop="10dp"
             >
-            <com.google.android.material.textfield.TextInputEditText
+            <com.example.storyapps.custom_component.EditTextPassword
                 android:id="@+id/et_password"
                 android:layout_below="@id/et_email"
                 android:layout_width="match_parent"

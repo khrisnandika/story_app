@@ -91,6 +91,7 @@ class AddStoryActivity : AppCompatActivity() {
                 Toast.makeText(this, response.message, Toast.LENGTH_SHORT).show()
             } else {
                 Toast.makeText(this, "Story added successfully", Toast.LENGTH_SHORT).show()
+                startActivity(Intent(this, MainActivity::class.java))
                 finish()
             }
         })
