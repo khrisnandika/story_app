@@ -31,29 +31,12 @@
             android:layout_marginTop="46dp"
             android:layout_marginStart="25dp"
             />
-        <Button
-            android:id="@+id/btn_logout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Logout"
-            android:layout_marginTop="20dp"
-            android:layout_alignParentEnd="true"
-            android:layout_marginEnd="25dp"
-            />
-        <Button
-            android:id="@+id/btn_add"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toLeftOf="@+id/btn_logout"
-            android:text="Add Story"
-            android:layout_marginTop="20dp"
-            android:layout_marginEnd="25dp"
-            />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recylerViewMain"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/btn_logout"
+            android:layout_below="@+id/txt_username"
             android:layout_centerInParent="true"
             android:layout_marginStart="25dp"
             android:layout_marginTop="25dp"
@@ -69,6 +52,22 @@
             android:indeterminate="true"
             android:indeterminateDrawable="@drawable/progress_bg"
             android:progress="0"
+            android:visibility="gone"/>
+
+        <Button
+            android:id="@+id/btnRetry"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="Retry"
+            android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/emptyView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="No data available"
             android:visibility="gone"/>
 
     </RelativeLayout>

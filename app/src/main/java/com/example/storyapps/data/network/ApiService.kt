@@ -3,6 +3,7 @@ package com.example.storyapps.data.network
 import com.example.storyapps.data.model.AddStoryResponse
 import com.example.storyapps.data.model.DetailResponse
 import com.example.storyapps.data.model.LoginResponse
+import com.example.storyapps.data.model.MapsResponse
 import com.example.storyapps.data.model.RegisterResponse
 import com.example.storyapps.data.model.StoryResponse
 import okhttp3.MultipartBody
@@ -15,6 +16,7 @@ import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.Part
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface ApiService {
 
@@ -51,4 +53,10 @@ interface ApiService {
         @Field("email") email: String,
         @Field("password") password: String
     ): LoginResponse
+
+    @GET("v1/stories")
+    suspend fun getMaps(
+        @Header("Authorization") token: String,
+        @Query("location") location: Int = 1
+    ): MapsResponse
 }

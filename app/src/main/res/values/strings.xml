@@ -27,4 +27,11 @@
     <string name="message_main_page">Explore a world of stories.</string>
     <string name="greeting">Hi %1$s,</string>
     <string name="logout">Logout</string>
+
+    <string name="title_activity_maps">MapsActivity</string>
+    <string name="normal_type">Normal</string>
+    <string name="satellite_type">Satellite</string>
+    <string name="terrain_type">Terrain</string>
+    <string name="hybrid_type">Hybrid</string>
+
 </resources>

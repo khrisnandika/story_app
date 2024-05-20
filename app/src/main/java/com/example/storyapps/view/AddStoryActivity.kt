@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.location.Location
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
@@ -20,6 +21,8 @@ import androidx.lifecycle.Observer
 import com.example.storyapps.BuildConfig
 import com.example.storyapps.databinding.ActivityAddStoryBinding
 import com.example.storyapps.viewmodel.AddStoryViewModel
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
@@ -29,6 +32,14 @@ class AddStoryActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAddStoryBinding
     private lateinit var photoFile: File
     private val addStoryViewModel by viewModels<AddStoryViewModel>()
+
+    private var currentLocation: Location? = null
+    private var lat: Double? = null
+    private var lon: Double? = null
+
+    private val fusedLocationClient: FusedLocationProviderClient by lazy {
+        LocationServices.getFusedLocationProviderClient(this)
+    }
 
     private val startForResultGallery = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == AppCompatActivity.RESULT_OK) {
@@ -47,19 +58,23 @@ class AddStoryActivity : AppCompatActivity() {
             binding.imageView.setImageBitmap(takenImage)
         }
     }
-    private val startForResultAddStory = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == RESULT_OK) {
-            // Refresh story list on success
-            setResult(RESULT_OK)
-            finish()
-        }
-    }
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAddStoryBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        binding.switchLocation.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                // Gunakan lokasi saat ini jika switch diaktifkan
+                getCurrentLocation()
+            } else {
+                // Jika switch dinonaktifkan, kosongkan lokasi saat ini
+                currentLocation = null
+                lat = null
+                lon = null
+            }
+        }
 
         binding.btnGallery.setOnClickListener {
             val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
@@ -83,7 +98,8 @@ class AddStoryActivity : AppCompatActivity() {
 
             val token = getSharedPreferences("user_prefs", MODE_PRIVATE).getString("token", "") ?: ""
             val compressedFile = compressImage(photoFile)
-            addStoryViewModel.addStory("Bearer $token", description, compressedFile)
+            // Gunakan nilai `currentLocation` saat memanggil fungsi addStory
+            addStoryViewModel.addStory("Bearer $token", description, compressedFile, lat?.toFloat(), lon?.toFloat())
         }
 
         addStoryViewModel.addStoryResult.observe(this, Observer { response ->
@@ -159,4 +175,53 @@ class AddStoryActivity : AppCompatActivity() {
 
         return file
     }
+
+    private fun getCurrentLocation() {
+        if (ContextCompat.checkSelfPermission(
+                this.applicationContext,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            // Izin lokasi telah diberikan, coba dapatkan lokasi saat ini
+            fusedLocationClient.lastLocation
+                .addOnSuccessListener { location: Location? ->
+                    // Periksa apakah lokasi berhasil didapatkan
+                    if (location != null) {
+                        // Lokasi saat ini berhasil didapatkan, atur nilai `currentLocation`
+                        currentLocation = location
+                        lat = location.latitude
+                        lon = location.longitude
+                    } else {
+                        // Lokasi tidak tersedia, mungkin perangkat tidak memiliki lokasi terakhir yang diketahui
+                        Toast.makeText(this, "Location not available", Toast.LENGTH_SHORT).show()
+                    }
+                }
+                .addOnFailureListener { e ->
+                    // Gagal mendapatkan lokasi, tampilkan pesan kesalahan
+                    Toast.makeText(this, "Failed to get location: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
+        } else {
+            // Meminta izin lokasi karena belum diberikan
+            requestLocationPermission()
+        }
+    }
+
+    private fun requestLocationPermission() {
+        requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+    }
+
+    private val requestPermissionLauncher =
+        registerForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { isGranted: Boolean ->
+            if (isGranted) {
+                // Izin diberikan, dapatkan lokasi saat ini
+                getCurrentLocation()
+            } else {
+                // Izin ditolak, berikan pesan bahwa lokasi tidak bisa digunakan
+                Toast.makeText(this, "Location permission denied", Toast.LENGTH_SHORT).show()
+                // Matikan switch jika izin ditolak
+                binding.switchLocation.isChecked = false
+            }
+        }
 }

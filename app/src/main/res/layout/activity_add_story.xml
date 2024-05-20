@@ -40,11 +40,20 @@
         android:gravity="start|top"
         android:background="@color/white"
         android:hint="Tulis deskripsi anda disini"/>
+
+    <Switch
+        android:id="@+id/switch_location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/et_description"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:text="Use Current Location" />
     <Button
         android:id="@+id/btn_upload"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/et_description"
+        android:layout_below="@id/switch_location"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="16dp"
         android:text="Upload"/>

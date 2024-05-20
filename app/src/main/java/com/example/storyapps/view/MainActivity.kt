@@ -4,12 +4,15 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.storyapps.R
 import com.example.storyapps.adapter.AdapterStory
 import com.example.storyapps.data.model.ListStoryItem
 import com.example.storyapps.databinding.ActivityMainBinding
@@ -77,21 +80,6 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this, "Token not found", Toast.LENGTH_SHORT).show()
         }
 
-        // Tambahkan ini untuk menangani tombol tambah cerita
-        binding.btnAdd.setOnClickListener {
-            startForResultAddStory.launch(Intent(this, AddStoryActivity::class.java))
-        }
-
-        binding.btnLogout.setOnClickListener {
-            // Menghapus semua data yang disimpan di SharedPreferences saat logout
-            val editor = sharedPreferences.edit()
-            editor.clear()
-            editor.apply()
-            // Mengarahkan pengguna ke halaman LoginActivity setelah logout
-            startActivity(Intent(this, LoginActivity::class.java))
-            finish() // Menutup MainActivity setelah logout
-        }
-
         // Setup SwipeRefreshLayout
         binding.swipeRefreshLayout.setOnRefreshListener {
             // Mengecek apakah operasi refresh sedang berlangsung
@@ -127,6 +115,33 @@ class MainActivity : AppCompatActivity() {
                 mainViewModel.getListStory(it)
             }
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId) {
+            R.id.logout -> {
+                // Menghapus semua data yang disimpan di SharedPreferences saat logout
+                val editor = sharedPreferences.edit()
+                editor.clear()
+                editor.apply()
+                // Mengarahkan pengguna ke halaman LoginActivity setelah logout
+                startActivity(Intent(this, LoginActivity::class.java))
+                finish() // Menutup MainActivity setelah logout
+            }
+            R.id.add -> {
+                // Tambahkan ini untuk menangani tombol tambah cerita
+                startForResultAddStory.launch(Intent(this, AddStoryActivity::class.java))
+            }
+            R.id.maps -> {
+                startActivity(Intent(this, MapsActivity::class.java))
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
 }

@@ -1,6 +1,8 @@
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
+    alias(libs.plugins.googleAndroidLibrariesMapsplatformSecretsGradlePlugin)
+    id ("kotlin-kapt")
 }
 
 android {
@@ -58,6 +60,8 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+    implementation(libs.play.services.maps)
+    implementation(libs.play.services.location)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -91,5 +95,17 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.7.0")
 
     implementation ("de.hdodenhof:circleimageview:3.1.0")
+    //swipe
     implementation ("androidx.swiperefreshlayout:swiperefreshlayout:1.2.0-alpha01")
+
+    //paging
+    implementation("androidx.room:room-paging:2.4.0-rc01")
+    implementation ("androidx.paging:paging-runtime:3.1.1")
+
+    val room_version = "2.6.1"
+    kapt("androidx.room:room-compiler:$room_version")
+    implementation("androidx.room:room-rxjava3:$room_version")
+    implementation ("androidx.room:room-ktx:$room_version")
+    implementation ("androidx.room:room-runtime:$room_version")
+
 }
