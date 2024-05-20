@@ -62,10 +62,10 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.play.services.maps)
     implementation(libs.play.services.location)
+    implementation(libs.androidx.junit.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-
 
     val cameraxVersion = "1.3.0"
     implementation("androidx.camera:camera-camera2:$cameraxVersion")
@@ -94,18 +94,36 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.7.0")
 
-    implementation ("de.hdodenhof:circleimageview:3.1.0")
-    //swipe
-    implementation ("androidx.swiperefreshlayout:swiperefreshlayout:1.2.0-alpha01")
+    implementation("de.hdodenhof:circleimageview:3.1.0")
+    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.2.0-alpha01")
 
-    //paging
+    // Paging
     implementation("androidx.room:room-paging:2.4.0-rc01")
-    implementation ("androidx.paging:paging-runtime:3.1.1")
+    implementation("androidx.paging:paging-runtime:3.1.1")
 
-    val room_version = "2.6.1"
-    kapt("androidx.room:room-compiler:$room_version")
-    implementation("androidx.room:room-rxjava3:$room_version")
-    implementation ("androidx.room:room-ktx:$room_version")
-    implementation ("androidx.room:room-runtime:$room_version")
+    val roomVersion = "2.6.1"
+    kapt("androidx.room:room-compiler:$roomVersion")
+    implementation("androidx.room:room-rxjava3:$roomVersion")
+    implementation("androidx.room:room-ktx:$roomVersion")
+    implementation("androidx.room:room-runtime:$roomVersion")
 
+    // Unit test
+    implementation("androidx.test:core:1.5.0")
+
+    testImplementation("androidx.arch.core:core-testing:2.1.0")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.1")
+    testImplementation("org.mockito:mockito-core:4.0.0")
+    testImplementation("org.mockito:mockito-inline:4.0.0")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:4.0.0")
+    testImplementation("junit:junit:4.13.2")
+    testImplementation("org.hamcrest:hamcrest-all:1.3")
+    testImplementation("androidx.arch.core:core-testing:2.2.0")
+    testImplementation("com.google.truth:truth:1.0.1")
+    androidTestImplementation("androidx.test.ext:junit:1.1.2")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.3.0")
+    androidTestImplementation ("androidx.paging:paging-compose:1.0.0-alpha12")
+    testImplementation("io.mockk:mockk:1.12.0")
+
+
+    debugImplementation("androidx.fragment:fragment-testing:1.7.1")
 }
