@@ -6,30 +6,45 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import androidx.lifecycle.lifecycleScope
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.storyapps.R
 import com.example.storyapps.adapter.AdapterStory
-import com.example.storyapps.data.model.ListStoryItem
+import com.example.storyapps.adapter.LoadStateAdapter
+import com.example.storyapps.data.database.StoryDatabase
+import com.example.storyapps.data.database.StoryRepository
+import com.example.storyapps.data.network.ApiConfig
 import com.example.storyapps.databinding.ActivityMainBinding
-import com.example.storyapps.utils.ResultStory
 import com.example.storyapps.viewmodel.MainViewModel
+import com.example.storyapps.viewmodel.factory.MainViewModelFactory
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var sharedPreferences: SharedPreferences
-    private val mainViewModel by viewModels<MainViewModel>()
-    private val adapter by lazy {
-        AdapterStory { item -> navigateToDetail(item.id) }
+
+    private val mainViewModel by viewModels<MainViewModel> {
+        MainViewModelFactory(
+            StoryRepository(
+                ApiConfig.getApiService(),
+                StoryDatabase.getDatabase(this),
+                sharedPreferences.getString("token", "") ?: ""
+            )
+        )
     }
 
-    // Menambahkan variabel boolean untuk menandai apakah operasi refresh sedang berlangsung
-    private var isRefreshing = false
+    private val adapter by lazy {
+        AdapterStory(
+            { item -> navigateToDetail(item.id) }
+        )
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,68 +53,37 @@ class MainActivity : AppCompatActivity() {
 
         sharedPreferences = getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
 
-        // Mendapatkan nama pengguna dari SharedPreferences dan menampilkannya
         val username = sharedPreferences.getString("username", "")
         binding.txtUsername.text = username
 
         binding.recylerViewMain.layoutManager = LinearLayoutManager(this)
         binding.recylerViewMain.setHasFixedSize(true)
-        binding.recylerViewMain.adapter = adapter
+        binding.recylerViewMain.adapter = adapter.withLoadStateHeaderAndFooter(
+            header = LoadStateAdapter { adapter.retry() }, // Retry function untuk header
+            footer = LoadStateAdapter { adapter.retry() }  // Retry function untuk footer
+        )
 
-        val token = sharedPreferences.getString("token", "")
-
-        mainViewModel.resultStory.observe(this) {
-            when (it) {
-                is ResultStory.Success<*> -> {
-                    @Suppress("UNCHECKED_CAST")
-                    adapter.setUsersData(it.data as MutableList<ListStoryItem>)
-                    // Jika operasi refresh sedang berlangsung, nonaktifkan animasi refresh
-                    if (isRefreshing) {
-                        binding.swipeRefreshLayout.isRefreshing = false
-                        isRefreshing = false // Menandai bahwa operasi refresh telah selesai
-                    }
-                }
-                is ResultStory.Error -> {
-                    Toast.makeText(this, it.exception.message.toString(), Toast.LENGTH_SHORT).show()
-                    // Jika operasi refresh sedang berlangsung dan terjadi kesalahan, nonaktifkan animasi refresh
-                    if (isRefreshing) {
-                        binding.swipeRefreshLayout.isRefreshing = false
-                        isRefreshing = false // Menandai bahwa operasi refresh telah selesai dengan kesalahan
-                    }
-                }
-                is ResultStory.Loading -> {
-                    binding.progressStory.isVisible = it.isLoading
-                }
+        lifecycleScope.launch {
+            mainViewModel.getStories().collectLatest {
+                adapter.submitData(it)
+                // Hentikan animasi swipe refresh setelah pengambilan data selesai
+                binding.swipeRefreshLayout.isRefreshing = false
             }
         }
 
-        // Panggil getListStory dengan memberikan token
-        token?.let {
-            mainViewModel.getListStory(it)
-        } ?: run {
-            Toast.makeText(this, "Token not found", Toast.LENGTH_SHORT).show()
-        }
-
-        // Setup SwipeRefreshLayout
         binding.swipeRefreshLayout.setOnRefreshListener {
-            // Mengecek apakah operasi refresh sedang berlangsung
-            if (!isRefreshing) {
-                isRefreshing = true // Menandai bahwa operasi refresh sedang berlangsung
-                val token = sharedPreferences.getString("token", "")
-                token?.let {
-                    mainViewModel.getListStory(it)
-                }
+            adapter.refresh()
+        }
+
+        lifecycleScope.launch {
+            adapter.loadStateFlow.collectLatest { loadStates ->
+                // Tampilkan loading ketika memuat data
+                binding.progressStory.isVisible = loadStates.refresh is LoadState.Loading
+                // Tampilkan pesan informasi ketika tidak ada data
+                binding.emptyView.isVisible = loadStates.refresh is LoadState.NotLoading && adapter.itemCount == 0
             }
         }
 
-        // Tambahan kode untuk otomatis memperbarui daftar cerita saat Activity dimulai
-        binding.swipeRefreshLayout.isRefreshing = true // Aktifkan animasi refresh
-        binding.swipeRefreshLayout.postDelayed({
-            token?.let {
-                mainViewModel.getListStory(it)
-            }
-            binding.swipeRefreshLayout.isRefreshing = false // Nonaktifkan animasi refresh
-        }, 1000)
     }
 
     private fun navigateToDetail(id: String) {
@@ -107,15 +91,13 @@ class MainActivity : AppCompatActivity() {
         intent.putExtra("story_id", id)
         startActivity(intent)
     }
-    private val startForResultAddStory = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == RESULT_OK) {
-            // Refresh story list
-            val token = sharedPreferences.getString("token", "")
-            token?.let {
-                mainViewModel.getListStory(it)
+
+    private val startForResultAddStory =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == RESULT_OK) {
+                adapter.refresh()
             }
         }
-    }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu, menu)
@@ -123,18 +105,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId) {
+        when (item.itemId) {
             R.id.logout -> {
-                // Menghapus semua data yang disimpan di SharedPreferences saat logout
                 val editor = sharedPreferences.edit()
                 editor.clear()
                 editor.apply()
-                // Mengarahkan pengguna ke halaman LoginActivity setelah logout
                 startActivity(Intent(this, LoginActivity::class.java))
-                finish() // Menutup MainActivity setelah logout
+                finish()
             }
             R.id.add -> {
-                // Tambahkan ini untuk menangani tombol tambah cerita
                 startForResultAddStory.launch(Intent(this, AddStoryActivity::class.java))
             }
             R.id.maps -> {
@@ -143,6 +122,4 @@ class MainActivity : AppCompatActivity() {
         }
         return super.onOptionsItemSelected(item)
     }
-
 }
-

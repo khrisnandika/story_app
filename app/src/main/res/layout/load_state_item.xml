@@ -6,29 +6,29 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:orientation="vertical">
 
+        <!-- Your UI elements here -->
         <ProgressBar
             android:id="@+id/progressBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center" />
+
+        <TextView
+            android:id="@+id/txtError"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Error Message"
             android:visibility="gone" />
 
         <TextView
-            android:id="@+id/errorMsg"
+            android:id="@+id/txtInfo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="8dp"
-            android:text="Error occurred"
-            android:visibility="gone" />
-
-        <Button
-            android:id="@+id/btnRetry"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Retry"
+            android:layout_gravity="center"
+            android:text="No Data Available"
             android:visibility="gone" />
     </LinearLayout>
 
