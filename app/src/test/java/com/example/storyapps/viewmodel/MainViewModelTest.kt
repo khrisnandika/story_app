@@ -2,7 +2,7 @@ package com.example.storyapps.viewmodel
 
 import androidx.paging.PagingData
 import com.example.storyapps.DataDummy
-import com.example.storyapps.MainDispatcherRule
+import com.example.storyapps.TestCoroutineRule
 import com.example.storyapps.data.database.StoryEntity
 import com.example.storyapps.data.database.StoryRepository
 import kotlinx.coroutines.flow.flowOf
@@ -23,7 +23,7 @@ class MainViewModelTest {
     private lateinit var storyRepository: StoryRepository
 
     @get:Rule
-    var mainDispatcherRule = MainDispatcherRule()
+    var mainDispatcherRule = TestCoroutineRule()
 
     @Before
     fun setUp() {

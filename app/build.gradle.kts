@@ -46,6 +46,7 @@ android {
     }
     kotlinOptions {
         jvmTarget = "1.8"
+        freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
     }
     buildFeatures {
         viewBinding = true
@@ -123,7 +124,6 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:3.3.0")
     androidTestImplementation ("androidx.paging:paging-compose:1.0.0-alpha12")
     testImplementation("io.mockk:mockk:1.12.0")
-
 
     debugImplementation("androidx.fragment:fragment-testing:1.7.1")
 }
