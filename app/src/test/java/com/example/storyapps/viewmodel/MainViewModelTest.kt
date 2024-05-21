@@ -1,65 +1,63 @@
-package com.example.storyapps.viewmodel
+package com.example.storyapps
 
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.paging.PagingData
-import com.example.storyapps.DataDummy
-import com.example.storyapps.TestCoroutineRule
 import com.example.storyapps.data.database.StoryEntity
 import com.example.storyapps.data.database.StoryRepository
+import com.example.storyapps.viewmodel.MainViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
-import org.junit.Before
+import org.junit.Assert.assertNotNull
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
-import org.mockito.MockitoAnnotations
+import org.mockito.junit.MockitoJUnit
+import org.mockito.junit.MockitoRule
 
+@ExperimentalCoroutinesApi
 class MainViewModelTest {
 
-    private lateinit var viewModel: MainViewModel
+    @get:Rule
+    var instantExecutorRule = InstantTaskExecutorRule()
+
+    @get:Rule
+    var mainDispatcherRule = MainDispatcherRule()
+
+    @get:Rule
+    var mockitoRule: MockitoRule = MockitoJUnit.rule()
 
     @Mock
     private lateinit var storyRepository: StoryRepository
 
-    @get:Rule
-    var mainDispatcherRule = TestCoroutineRule()
+    @Test
+    fun `when Get Stories Should Not Null and Return Data`() = mainDispatcherRule.runTest {
+        val dummyStories = DataDummy.generateDummyStories()
+        val data = PagingData.from(dummyStories)
+        val flow = flowOf(data)
+        `when`(storyRepository.getStories()).thenReturn(flow)
 
-    @Before
-    fun setUp() {
-        MockitoAnnotations.initMocks(this)
-        viewModel = MainViewModel(storyRepository)
+        val mainViewModel = MainViewModel(storyRepository)
+        val actualStories = FlowTestUtil.getOrAwaitValue(mainViewModel.getStories())
+
+        assertNotNull(actualStories)
+        val actualStoriesList = FlowTestUtil.getValues(mainViewModel.getStories())
+        assertEquals(dummyStories.size, actualStoriesList.size)
+        assertEquals(dummyStories[0], actualStoriesList[0]) // Memastikan data pertama yang dikembalikan sesuai
     }
 
     @Test
-    fun `test successful loading of stories`() {
-        runBlocking {
-            val expectedData: PagingData<StoryEntity> = DataDummy.generateDummyStoryEntities().let { PagingData.from(it) }
+    fun `when No Stories Should Return Zero Data`() = mainDispatcherRule.runTest {
+        val data = PagingData.empty<StoryEntity>()
+        val flow = flowOf(data)
+        `when`(storyRepository.getStories()).thenReturn(flow)
 
-            `when`(storyRepository.getStories()).thenReturn(flowOf(expectedData))
+        val mainViewModel = MainViewModel(storyRepository)
+        val actualStories = FlowTestUtil.getOrAwaitValue(mainViewModel.getStories())
 
-            val collectedData = viewModel.getStories().collect { pagingData ->
-                pagingData
-            }
-
-            assertEquals(expectedData, collectedData)
-        }
-    }
-
-    @Test
-    fun `test empty list of stories`() {
-        runBlocking {
-            val expectedData: PagingData<StoryEntity> = DataDummy.generateDummyStoryEntities().let { PagingData.from(it) }
-
-            `when`(storyRepository.getStories()).thenReturn(flowOf(expectedData))
-
-            val collectedData = viewModel.getStories().collect { pagingData ->
-                pagingData
-            }
-
-            assertEquals(expectedData, collectedData)
-        }
+        assertNotNull(actualStories)
+        val actualStoriesList = FlowTestUtil.getValues(mainViewModel.getStories())
+        assertEquals(0, actualStoriesList.size)
     }
 }
-
-

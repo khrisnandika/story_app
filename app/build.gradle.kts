@@ -108,22 +108,26 @@ dependencies {
     implementation("androidx.room:room-ktx:$roomVersion")
     implementation("androidx.room:room-runtime:$roomVersion")
 
-    // Unit test
-    implementation("androidx.test:core:1.5.0")
+    // Core Android dependencies
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.1")
+    implementation("androidx.paging:paging-rxjava3:3.1.1")
 
-    testImplementation("androidx.arch.core:core-testing:2.1.0")
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.1")
-    testImplementation("org.mockito:mockito-core:4.0.0")
-    testImplementation("org.mockito:mockito-inline:4.0.0")
-    testImplementation("org.mockito.kotlin:mockito-kotlin:4.0.0")
+    // Unit testing dependencies
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.hamcrest:hamcrest-all:1.3")
+    testImplementation("com.google.truth:truth:1.1.3")
     testImplementation("androidx.arch.core:core-testing:2.2.0")
-    testImplementation("com.google.truth:truth:1.0.1")
-    androidTestImplementation("androidx.test.ext:junit:1.1.2")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.3.0")
-    androidTestImplementation ("androidx.paging:paging-compose:1.0.0-alpha12")
-    testImplementation("io.mockk:mockk:1.12.0")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.5")
+    testImplementation("org.mockito:mockito-core:4.10.0")
+    testImplementation("org.mockito:mockito-inline:4.10.0")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:4.1.0")
+    testImplementation("io.mockk:mockk:1.13.4")
 
-    debugImplementation("androidx.fragment:fragment-testing:1.7.1")
+    // Android Instrumentation testing dependencies
+    androidTestImplementation("androidx.test.ext:junit:1.1.5")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    androidTestImplementation("androidx.paging:paging-compose:1.0.0-alpha18")
+
+    // Debugging dependencies
+    debugImplementation("androidx.fragment:fragment-testing:1.6.1")
 }
