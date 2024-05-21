@@ -103,8 +103,8 @@ class LoginActivity : AppCompatActivity(), View.OnFocusChangeListener, View.OnKe
 
                     // Jika login berhasil, dapatkan informasi pengguna dan token
                     if (!response.error) {
-                        val username = response.loginResult?.name
-                        val token = response.loginResult?.token
+                        val username = response.loginResult.name
+                        val token = response.loginResult.token
 
                         // Cetak informasi pengguna dan token ke terminal log
                         Log.d("LoginActivity", "User logged in: $username")
@@ -127,9 +127,10 @@ class LoginActivity : AppCompatActivity(), View.OnFocusChangeListener, View.OnKe
             Toast.makeText(this, "Login successful", Toast.LENGTH_SHORT).show()
 
             // Simpan username dan status login setelah login berhasil
-            val username = response.loginResult?.name // Ganti dengan cara mengambil username dari response login
+            val username =
+                response.loginResult.name // Ganti dengan cara mengambil username dari response login
             val editor = sharedPreferences.edit()
-            val token = response.loginResult?.token
+            val token = response.loginResult.token
 
             sharedPreferences.edit().putString("token", token).apply()
             editor.putString("username", username)

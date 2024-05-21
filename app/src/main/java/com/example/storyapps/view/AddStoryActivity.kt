@@ -42,7 +42,7 @@ class AddStoryActivity : AppCompatActivity() {
     }
 
     private val startForResultGallery = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == AppCompatActivity.RESULT_OK) {
+        if (result.resultCode == RESULT_OK) {
             val data: Intent? = result.data
             val selectedImage: Uri? = data?.data
             selectedImage?.let {
@@ -53,7 +53,7 @@ class AddStoryActivity : AppCompatActivity() {
     }
 
     private val startForResultCamera = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == AppCompatActivity.RESULT_OK) {
+        if (result.resultCode == RESULT_OK) {
             val takenImage = BitmapFactory.decodeFile(photoFile.path)
             binding.imageView.setImageBitmap(takenImage)
         }
